@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!--
+    ============================================================================
+    TestNG Suite File: smoke.xml
+    ============================================================================
+
+    WHAT IS A TestNG SUITE FILE?
+    ------------------------------
+    A TestNG suite XML file defines:
+      - WHICH test runner classes to execute
+      - HOW MANY threads to use (parallelism)
+      - WHAT parameters to pass to tests
+      - IN WHAT ORDER to run test groups
+
+    HOW IT WORKS WITH CARINA + CUCUMBER:
+    --------------------------------------
+    1. Maven Surefire Plugin reads this XML (configured in pom.xml)
+    2. TestNG interprets the XML and calls the specified runner class
+    3. The runner class (@CucumberOptions) tells Cucumber what to run
+    4. Carina's CucumberRunner manages browser lifecycle per scenario
+
+    TO RUN THIS SUITE:
+    -------------------
+    mvn clean test -Dsuite=src/test/resources/testng_suites/smoke.xml
+
+    OR override browser from command line:
+    mvn clean test -Dsuite=src/test/resources/testng_suites/smoke.xml -Dbrowser=firefox
+
+    ============================================================================
+-->
+
+<suite name="Smoke Test Suite"
+       verbose="1"
+       thread-count="1"
+       parallel="none">
+
+    <!--
+        PARAMETERS:
+        These override properties in _config.properties.
+        Command-line -D properties have HIGHEST priority (override these too).
+    -->
+    <parameter name="browser" value="chrome"/>
+    <parameter name="headless_mode" value="false"/>
+
+    <!--
+        TEST BLOCK:
+        Each <test> block can run different classes or have different parameters.
+        You can have multiple <test> blocks in one suite.
+    -->
+    <test name="SauceDemo Smoke Tests">
+        <classes>
+            <!-- Point to our Cucumber runner class that's tagged @smoke -->
+            <class name="com.carina.demo.runners.SmokeTestRunner"/>
+        </classes>
+    </test>
+
+</suite>

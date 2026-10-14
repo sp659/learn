@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!--
+    ============================================================================
+    TestNG Suite File: regression.xml
+    ============================================================================
+
+    PARALLEL EXECUTION EXPLAINED:
+    --------------------------------
+    parallel="methods" with thread-count="3" means TestNG will run
+    up to 3 test methods (scenarios) simultaneously using 3 browser instances.
+
+    Carina handles this safely via ThreadLocal<WebDriver> — each thread
+    gets its own isolated browser instance. This is one of Carina's
+    biggest advantages over plain Selenium + TestNG!
+
+    WARNING for freshers:
+    ---------------------
+    When running in parallel, ensure your test data is INDEPENDENT.
+    If Scenario A and Scenario B both log in as the same user and
+    modify the same data, they will CONFLICT with each other.
+    Use different test accounts or reset state between tests.
+
+    TO RUN:
+    --------
+    mvn clean test -Dsuite=src/test/resources/testng_suites/regression.xml
+    ============================================================================
+-->
+
+<suite name="Regression Test Suite"
+       verbose="1"
+       thread-count="2"
+       parallel="methods">
+
+    <parameter name="browser" value="chrome"/>
+    <parameter name="headless_mode" value="true"/><!-- Headless for CI/CD -->
+
+    <test name="SauceDemo Full Regression">
+        <classes>
+            <class name="com.carina.demo.runners.RegressionTestRunner"/>
+        </classes>
+    </test>
+
+</suite>

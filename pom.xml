@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- =====================================================
+         PROJECT COORDINATES
+         ===================================================== -->
+    <groupId>com.carina.demo</groupId>
+    <artifactId>carina-cucumber-demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Carina Cucumber Demo</name>
+    <description>
+        A sample BDD test automation project using Zebrunner Carina Framework
+        integrated with Cucumber. Designed to help freshers learn framework
+        fundamentals: Page Objects, Step Definitions, Feature Files, and Reporting.
+    </description>
+
+    <!-- =====================================================
+         PROPERTIES
+         ===================================================== -->
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--
+            CARINA VERSION ALIGNMENT
+            ========================
+            carina-core    : latest is 1.3.0 (released Oct 2024)
+            carina-cucumber: latest is 1.2.9 (released Apr 2024 — no 1.3.0 exists!)
+
+            We use carina-core 1.2.9 + carina-cucumber 1.2.9 for guaranteed
+            compatibility (both were released on the same day: 2024-04-17).
+
+            IMPORTANT FOR FRESHERS:
+            Never assume all sub-modules of a framework release together.
+            Always check Maven Central for the actual available versions.
+            https://repo.maven.apache.org/maven2/com/zebrunner/
+        -->
+        <carina-core.version>1.2.9</carina-core.version>
+        <carina-cucumber.version>1.2.9</carina-cucumber.version>
+
+        <!-- Cucumber version compatible with carina-cucumber 1.2.9 -->
+        <cucumber.version>7.14.0</cucumber.version>
+
+        <!-- TestNG version -->
+        <testng.version>7.8.0</testng.version>
+
+        <!-- Logging -->
+        <slf4j.version>2.0.9</slf4j.version>
+
+        <!-- Maven plugins -->
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+
+        <!--
+            DEFAULT TEST SUITE
+            Override on command line: mvn clean test -Dsuite=path/to/suite.xml
+            Without this default, bare 'mvn clean test' fails with
+            LifecyclePhaseNotFoundException.
+        -->
+        <suite>src/test/resources/testng_suites/smoke.xml</suite>
+    </properties>
+
+    <!-- =====================================================
+         DEPENDENCIES
+         ===================================================== -->
+    <dependencies>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             1. CARINA CORE - The heart of the framework
+                Provides: WebDriver management, Page Objects,
+                          IDriverPool, ICustomTypePageFactory,
+                          Configuration handling, Reporting hooks
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>com.zebrunner</groupId>
+            <artifactId>carina-core</artifactId>
+            <version>${carina-core.version}</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             2. CARINA CUCUMBER - Bridges Carina with Cucumber/BDD
+                Provides: CucumberRunner base class,
+                          Carina lifecycle hooks for Cucumber,
+                          WebDriver injection for step definitions
+
+                AVAILABLE VERSIONS: 1.0.0, 1.0.1, 1.0.2, 1.1.3, 1.1.4,
+                                    1.1.5, 1.2.6, 1.2.7, 1.2.8, 1.2.9
+                LATEST: 1.2.9 (as of April 2024)
+                NOTE: There is NO 1.3.0 for this artifact!
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>com.zebrunner</groupId>
+            <artifactId>carina-cucumber</artifactId>
+            <version>${carina-cucumber.version}</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             3. CUCUMBER JAVA - Step Definition annotations
+                (@Given, @When, @Then, @And, @But)
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             4. CUCUMBER TESTNG - TestNG integration for Cucumber
+                Allows Cucumber to run inside TestNG lifecycle
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             5. TESTNG - Test framework (used by Carina internally)
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             6. LOMBOK - Reduces boilerplate (getters/setters/logs)
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             7. ASSERTJ - Fluent assertion library for readable tests
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.24.2</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             8. SLF4J + LOGBACK - Logging framework
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+             9. CUCUMBER REPORTING - Beautiful HTML reports
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>5.7.7</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- =====================================================
+         BUILD CONFIGURATION
+         ===================================================== -->
+    <build>
+        <plugins>
+
+            <!-- Maven Compiler Plugin: Ensures Java 11 compilation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <!-- Enable annotation processing for Lombok -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin: Runs TestNG test suites -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <!--
+                        Default suite to run. Override from command line:
+                        mvn clean test -Dsuite=src/test/resources/testng_suites/smoke.xml
+                    -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>
+                            ${suite}
+                        </suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <!-- Pass all system properties down to the test JVM -->
+                    <systemPropertyVariables>
+                        <file_log_level>INFO</file_log_level>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <!-- Cucumber Reporting Plugin: Generates beautiful HTML reports -->
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.7.7</version>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>Carina Cucumber Demo</projectName>
+                            <outputDirectory>${project.build.directory}/cucumber-html-reports</outputDirectory>
+                            <jsonFiles>
+                                <param>**/*.json</param>
+                            </jsonFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
